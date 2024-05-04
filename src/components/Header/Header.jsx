@@ -19,12 +19,12 @@ const Header = () => {
   return (
     <header className="bg-base-100 shadow-sm h-16">
       <nav className="navbar max-w-screen-xl px-4 mx-auto">
-        <div className="flex-1">
+        <Link to={'/'} className="flex-1">
           <div className="flex gap-2 items-center">
             <img className="w-auto h-7" src={logo} alt="" />
             <span className="font-bold">SoloSphere</span>
           </div>
-        </div>
+        </Link>
 
         <div className="flex-none">
           <ul className="menu menu-horizontal px-1">
@@ -59,7 +59,7 @@ const Header = () => {
                 className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li>
-                  <div className="justify-between">Add Job</div>
+                  <Link to="/add-job" className="justify-between">Add Job</Link>
                 </li>
                 <li>
                   <div>My Posted Jobs</div>
