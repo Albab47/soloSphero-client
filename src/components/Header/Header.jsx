@@ -46,11 +46,7 @@ const Header = () => {
                 role="button"
                 className="btn btn-ghost btn-circle avatar"
               >
-                <div
-                  title={user?.displayName}
-                  className="w-10 rounded-full"
-                  title=""
-                >
+                <div title={user?.displayName} className="w-10 rounded-full">
                   <img
                     referrerPolicy="no-referrer"
                     alt="User Profile Photo"

@@ -1,10 +1,11 @@
+import HeroCarousel from "../components/HeroCarousel/HeroCarousel";
 
 const HomePage = () => {
-    return (
-        <div className='text-4xl text-blue-400'>
-            This is home page
-        </div>
-    );
+  return (
+    <>
+      <HeroCarousel />
+    </>
+  );
 };
 
 export default HomePage;
