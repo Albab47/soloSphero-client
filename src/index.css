@@ -5,6 +5,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  @apply font-lato;
+}
+
 .mySwiper {
     @apply max-w-screen-xl mx-auto px-4
 }
