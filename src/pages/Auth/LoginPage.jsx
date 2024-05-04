@@ -5,17 +5,36 @@ import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import toast from "react-hot-toast";
 
+
 const LoginPage = () => {
-  const { signInWithGoogle } = useContext(AuthContext);
+  const { signInWithGoogle, signIn } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+    console.log(email,password);
+
+    try {
+      const result = await signIn(email, password);
+      console.log(result.user);
+      navigate("/");
+      toast.success("Login successful");
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleSignInWithGoogle = async () => {
     try {
       await signInWithGoogle();
-      navigate("/");
       toast.success("Sign in successful");
+      navigate("/");
     } catch (err) {
       console.log(err);
+      toast.error(err.message);
     }
   };
 
@@ -77,7 +96,8 @@ const LoginPage = () => {
 
             <span className="w-1/5 border-b dark:border-gray-400 lg:w-1/4"></span>
           </div>
-          <form>
+
+          <form onSubmit={handleSignIn}>
             <div className="mt-4">
               <label
                 className="block mb-2 text-sm font-medium text-gray-600 "

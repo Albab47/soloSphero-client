@@ -2,9 +2,19 @@ import { Link } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
+import toast from "react-hot-toast";
 
 const Header = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logOut } = useContext(AuthContext);
+
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      toast.success("Logout successful");
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <header className="bg-base-100 shadow-sm h-16">
@@ -36,7 +46,11 @@ const Header = () => {
                 role="button"
                 className="btn btn-ghost btn-circle avatar"
               >
-                <div className="w-10 rounded-full" title="">
+                <div
+                  title={user?.displayName}
+                  className="w-10 rounded-full"
+                  title=""
+                >
                   <img
                     referrerPolicy="no-referrer"
                     alt="User Profile Photo"
@@ -61,7 +75,10 @@ const Header = () => {
                   <div>Bid Requests</div>
                 </li>
                 <li className="mt-2">
-                  <button className="bg-gray-200 block text-center">
+                  <button
+                    onClick={handleLogout}
+                    className="bg-gray-200 block text-center"
+                  >
                     Logout
                   </button>
                 </li>
