@@ -3,12 +3,16 @@ import { AuthContext } from "../providers/AuthProvider";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import {useNavigate} from 'react-router-dom';
 
 const AddJobPage = () => {
   const [startDate, setStartDate] = useState(new Date());
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate()
 
-  const handleAddJob = (e) => {
+  const handleAddJob = async(e) => {
     e.preventDefault();
     const form = e.target;
     const job_title = form.job_title.value;
@@ -18,7 +22,7 @@ const AddJobPage = () => {
     const max_price = parseFloat(form.max_price.value);
     const description = form.description.value;
 
-    const newJob = {
+    const job = {
       job_title,
       deadline,
       category,
@@ -32,7 +36,17 @@ const AddJobPage = () => {
       },
     };
 
-    console.log(newJob);
+    try {
+      const {data} = await axios.post('http://localhost:8000/jobs', job)
+      console.log(data);
+      if(data.insertedId) {
+        form.reset()
+        toast.success("Job added successfully")
+        navigate('/')
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
