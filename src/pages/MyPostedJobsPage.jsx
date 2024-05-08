@@ -35,9 +35,9 @@ const MyPostedJobs = () => {
     }
   };
 
-  // if (loading) {
-  //   return <p className="text-2xl">Loading...</p>;
-  // }
+  if (jobs.length < 1) {
+    return <p className="text-2xl text-gray-700 flex justify-center mt-20">You did not post any job yet </p>;
+  }
 
   return (
     <section className="container px-4 mx-auto pt-12">
@@ -45,7 +45,7 @@ const MyPostedJobs = () => {
         <h2 className="text-lg font-medium text-gray-800 ">My Posted Jobs</h2>
 
         <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full ">
-          {jobs.length} Jobs
+          {jobs?.length} Jobs
         </span>
       </div>
 
@@ -100,7 +100,7 @@ const MyPostedJobs = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 ">
-                  {jobs.map((job) => (
+                  {jobs?.map((job) => (
                     <tr key={job._id}>
                       <td className="px-4 py-4 text-sm text-gray-500  whitespace-nowrap">
                         {job.job_title}
