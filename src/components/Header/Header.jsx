@@ -62,7 +62,7 @@ const Header = () => {
                   <Link to="/add-job" className="justify-between">Add Job</Link>
                 </li>
                 <li>
-                  <div>My Posted Jobs</div>
+                  <Link to="/my-posted-jobs">My Posted Jobs</Link>
                 </li>
                 <li>
                   <div>My Bids</div>
