@@ -1,25 +1,42 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../providers/AuthProvider";
+import toast from "react-hot-toast";
 
 const MyPostedJobs = () => {
   const [jobs, setJobs] = useState([]);
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
 
   const fetchJobs = async () => {
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_API_URL}/my-jobs/${user?.email}`
+    );
+    setJobs(data);
+  };
+
+  const handleDeleteJob = async (id) => {
+    // console.log(id, 'job will be deleted');
     try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/my-jobs/${user?.email}`
+      const { data } = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/jobs/${id}`
       );
-      setJobs(data);
+      console.log(data);
+      if(data.deletedCount === 1) {
+        toast.success('Job Deleted successfully')
+        fetchJobs();
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
-  useEffect(() => {
-    fetchJobs();
-  }, []);
+  if (loading) {
+    return <p className="text-2xl">Loading...</p>;
+  }
 
   return (
     <section className="container px-4 mx-auto pt-12">
@@ -113,7 +130,11 @@ const MyPostedJobs = () => {
                       </td>
                       <td className="px-4 py-4 text-sm whitespace-nowrap">
                         <div className="flex items-center gap-x-6">
-                          <button className="text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none">
+                          {/* delete btn */}
+                          <button
+                            onClick={() => handleDeleteJob(job._id)}
+                            className="text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none"
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
@@ -146,7 +167,6 @@ const MyPostedJobs = () => {
                               />
                             </svg>
                           </button>
-                          
                         </div>
                       </td>
                     </tr>
