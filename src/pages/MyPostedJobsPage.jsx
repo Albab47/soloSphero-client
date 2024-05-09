@@ -14,7 +14,8 @@ const MyPostedJobs = () => {
 
   const fetchJobs = async () => {
     const { data } = await axios.get(
-      `${import.meta.env.VITE_API_URL}/my-jobs/${user?.email}`
+      `${import.meta.env.VITE_API_URL}/my-jobs/${user?.email}`,
+      { withCredentials: true }
     );
     setJobs(data);
   };
@@ -26,8 +27,8 @@ const MyPostedJobs = () => {
         `${import.meta.env.VITE_API_URL}/jobs/${id}`
       );
       console.log(data);
-      if(data.deletedCount === 1) {
-        toast.success('Job Deleted successfully')
+      if (data.deletedCount === 1) {
+        toast.success("Job Deleted successfully");
         fetchJobs();
       }
     } catch (err) {
@@ -36,7 +37,11 @@ const MyPostedJobs = () => {
   };
 
   if (jobs.length < 1) {
-    return <p className="text-2xl text-gray-700 flex justify-center mt-20">You did not post any job yet </p>;
+    return (
+      <p className="text-2xl text-gray-700 flex justify-center mt-20">
+        You did not post any job yet{" "}
+      </p>
+    );
   }
 
   return (
@@ -153,7 +158,10 @@ const MyPostedJobs = () => {
                           </button>
 
                           {/* Update btn */}
-                          <Link to={`/update-job/${job._id}`} className="text-gray-500 transition-colors duration-200   hover:text-yellow-500 focus:outline-none">
+                          <Link
+                            to={`/update-job/${job._id}`}
+                            className="text-gray-500 transition-colors duration-200   hover:text-yellow-500 focus:outline-none"
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
