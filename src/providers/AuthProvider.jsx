@@ -11,11 +11,11 @@ import {
   updateProfile,
 } from "firebase/auth";
 import app from "../firebase/firebase.config";
+import axios from "axios";
 
 const auth = getAuth(app);
 export const AuthContext = createContext();
 const googleProvider = new GoogleAuthProvider();
-
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -50,10 +50,30 @@ const AuthProvider = ({ children }) => {
 
   // onAuthStateChange
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      const userEmail = currentUser?.email || user?.email;
+      const loggedUser = { email: userEmail };
       setUser(currentUser);
       console.log("CurrentUser-->", currentUser);
       setLoading(false);
+
+      // if user exists then issue a token
+      if (currentUser) {
+        console.log(loggedUser);
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_API_URL}/jwt`,
+          loggedUser,
+          { withCredentials: true }
+        );
+        console.log(data);
+      } else {
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_API_URL}/logout`,
+          loggedUser,
+          { withCredentials: true }
+        );
+        console.log(data);
+      }
     });
     return () => {
       return unsubscribe();
