@@ -59,7 +59,6 @@ const AuthProvider = ({ children }) => {
 
       // if user exists then issue a token
       if (currentUser) {
-        console.log(loggedUser);
         const { data } = await axios.post(
           `${import.meta.env.VITE_API_URL}/jwt`,
           loggedUser,

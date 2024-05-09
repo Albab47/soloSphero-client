@@ -1,23 +1,43 @@
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const BidRequestsPage = () => {
   const { user } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient()
+  
   const {
     isLoading,
     refetch,
     data: bids,
   } = useQuery({
-    queryKey: ["bidRequests"],
+    queryKey: ["bidRequests", user?.email],
     queryFn: async () => {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/bid-requests?email=${user?.email}`,
-        { withCredentials: true }
+      const { data } = await axiosSecure.get(
+        `/bid-requests?email=${user?.email}`
       );
       return data;
+    },
+  });
+
+  // Mutation data
+  const { mutateAsync } = useMutation({
+    mutationFn: async ({ id, status }) => {
+      const { data } = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/bids/${id}`,
+        { status }
+      );
+      console.log(data);
+    },
+    onSuccess: () => {
+      toast.success("status updated successfully");
+      // refetch(); <-- sohoj
+      // kotin
+      queryClient.invalidateQueries({queryKey: ['bidRequests'] })
     },
   });
 
@@ -31,15 +51,16 @@ const BidRequestsPage = () => {
     if (prevStatus === status) {
       return console.log("Afwan bro! hobe na..");
     }
+    await mutateAsync({ id, status });
 
-    const { data } = await axios.patch(
-      `${import.meta.env.VITE_API_URL}/bids/${id}`,
-      { status }
-    );
-    if (data.modifiedCount === 1) {
-      toast.success("status updated successfully");
-      refetch();
-    }
+    // const { data } = await axios.patch(
+    //   `${import.meta.env.VITE_API_URL}/bids/${id}`,
+    //   { status }
+    // );
+    // if (data.modifiedCount === 1) {
+    //   toast.success("status updated successfully");
+    //   refetch();
+    // }
   };
 
   return (

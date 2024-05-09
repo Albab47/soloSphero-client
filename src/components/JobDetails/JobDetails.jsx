@@ -9,7 +9,7 @@ import axios from "axios";
 const JobDetails = () => {
   const [startDate, setStartDate] = useState(new Date());
   const job = useLoaderData();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   //   console.log(job);
   const { user } = useContext(AuthContext);
   const {
@@ -31,6 +31,7 @@ const JobDetails = () => {
     }
 
     const form = e.target;
+    const jobId = _id;
     const price = form.price.value;
     if (price > max_price) {
       return toast.error("Offer less then max price");
@@ -42,25 +43,30 @@ const JobDetails = () => {
     const status = "Pending";
 
     const bidData = {
+      jobId,
       job_title,
       price,
       deadline,
       email,
       status,
       comment,
-      buyer
+      buyer,
     };
     console.log(bidData);
 
     try {
-      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/bids`, bidData);
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/bids`,
+        bidData
+      );
       if (data.insertedId) {
         form.reset();
         toast.success("Job Bided successfully");
         navigate("/");
       }
     } catch (err) {
-      console.error(err);
+      toast.error(err.response.data);
+      e.target.reset()
     }
   };
 
@@ -121,6 +127,7 @@ const JobDetails = () => {
                 id="price"
                 type="number"
                 name="price"
+                required
                 className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md   focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring"
               />
             </div>
